@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:p="http://www.springframework.org/schema/p" 
+    xmlns:tx="http://www.springframework.org/schema/tx" 
+    xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	                            http://www.springframework.org/schema/context 
+	                            http://www.springframework.org/schema/context/spring-context-3.0.xsd
+								http://www.springframework.org/schema/tx 
+								http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+								http://www.springframework.org/schema/mvc
+								http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+								http://www.springframework.org/schema/aop
+								http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+								http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+								">
+	
+	
+	<context:component-scan base-package="com.xdz">
+	<!-- 开启组件扫描 -->
+	</context:component-scan>
+
+	<mvc:annotation-driven />
+
+	<!-- JDBC配置文件所在位置 -->
+	<bean id="propertyConfiguer"  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
+			<property name="locations" value="classpath:jdbc_mysql.properties">
+			</property>
+	</bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" >
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost/selftest"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="password"></property>
+	</bean>
+
+	<!-- 配置SessionFactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+			</props>
+		</property>
+		<property name="packagesToScan">
+			<list>
+				<value>com.xdz.model</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataSourceTYZ" class="org.apache.commons.dbcp.BasicDataSource" >
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://192.168.18.53/test"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="password"></property>
+	</bean>
+
+	<bean id="sessionFactoryTYZ" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceTYZ" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+			</props>
+		</property>
+		<property name="packagesToScan">
+			<list>
+				<value>com.xdz.model</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置一个事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+
+	<bean id="jdbcTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="jdbcTransactionManagerTYZ" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceTYZ" />
+	</bean>
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"/><!--  sessionFactoryTYZ  sessionFactory   -->
+	</bean>
+
+	<bean id="hibernateTemplateTYZ" class="org.springframework.orm.hibernate4.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactoryTYZ"/><!--  sessionFactoryTYZ  sessionFactory   -->
+	</bean>
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="jdbcTemplateTYZ" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSourceTYZ" />
+	</bean>
+
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+
+	<aop:config>
+		<aop:pointcut expression="execution(* com.xdz.service.impl.*.*(..))" id="txPointcut"/>
+
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
+
+
+	</aop:config>
+
+	<tx:advice id="txAdvice" transaction-manager="jdbcTransactionManager">
+		<tx:attributes>
+
+			<tx:method name="bothAttrTest" propagation="REQUIRED" read-only="true" no-rollback-for="RuntimeException" />
+
+		</tx:attributes>
+	</tx:advice>
+
+	<tx:annotation-driven transaction-manager="jdbcTransactionManager" proxy-target-class="true" />
+	<aop:aspectj-autoproxy />
+
+</beans>
