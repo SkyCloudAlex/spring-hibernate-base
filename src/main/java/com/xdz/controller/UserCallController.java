@@ -1,5 +1,6 @@
 package com.xdz.controller;
 
+import com.xdz.service.ActivityService;
 import com.xdz.service.UserCallService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +22,20 @@ public class UserCallController {
     @Resource(name = "userCallService")
     private UserCallService userCallService;
 
+    @Resource(name = "activityService")
+    private ActivityService activityService;
+
     @RequestMapping("/testSettingWork")
     @ResponseBody
     public void testSettingWork(){
         System.err.println("调用controller层的testSettingWork方法");
         userCallService.testSettingWork();
+    }
+
+    @RequestMapping("/watchMovie")
+    @ResponseBody
+    public void watchMovie(){
+        activityService.watchMovie();
     }
 
 }

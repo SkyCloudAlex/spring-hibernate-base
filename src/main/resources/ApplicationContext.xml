@@ -115,21 +115,21 @@
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
 
-	<aop:config>
-		<aop:pointcut expression="execution(* com.xdz.service.impl.*.*(..))" id="txPointcut"/>
+	<!-- 如果要用xml方式配置事务，则可以打开以下配置的注释  -->
+	<!--<aop:config>-->
+		<!--<aop:pointcut expression="execution(* com.xdz.service.impl.*.*(..))" id="txPointcut"/>-->
 
-		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
+		<!--<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />-->
 
+	<!--</aop:config>-->
 
-	</aop:config>
+	<!--<tx:advice id="txAdvice" transaction-manager="jdbcTransactionManager">-->
+		<!--<tx:attributes>-->
 
-	<tx:advice id="txAdvice" transaction-manager="jdbcTransactionManager">
-		<tx:attributes>
+			<!--<tx:method name="bothAttrTest" propagation="REQUIRED" read-only="true" no-rollback-for="RuntimeException" />-->
 
-			<tx:method name="bothAttrTest" propagation="REQUIRED" read-only="true" no-rollback-for="RuntimeException" />
-
-		</tx:attributes>
-	</tx:advice>
+		<!--</tx:attributes>-->
+	<!--</tx:advice>-->
 
 	<tx:annotation-driven transaction-manager="jdbcTransactionManager" proxy-target-class="true" />
 	<aop:aspectj-autoproxy />
