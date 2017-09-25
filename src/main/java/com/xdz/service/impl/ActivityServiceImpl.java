@@ -16,4 +16,11 @@ public class ActivityServiceImpl implements ActivityService {
         System.err.println("用户正在看电影");
     }
 
+    public void workEveryDay(){
+        System.err.println("进行每天的工作");
+        throw new RuntimeException("路上生病了");
+    }
+
+
+
 }

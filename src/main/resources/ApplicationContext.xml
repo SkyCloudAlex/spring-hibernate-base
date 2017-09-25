@@ -131,6 +131,21 @@
 		<!--</tx:attributes>-->
 	<!--</tx:advice>-->
 
+	<aop:config>
+
+		<aop:pointcut id="pointCutForXml" expression="execution(* com.xdz.service.impl.ActivityServiceImpl.*(..))" />
+
+		<aop:aspect id="AspectForXml" ref="aspectForXmlServiceImpl">
+			<aop:before method="getUp" pointcut-ref="pointCutForXml"/>
+			<aop:before method="washfaceAndTeeth" pointcut-ref="pointCutForXml"/>
+			<aop:before method="byUnderGroundBefore" pointcut-ref="pointCutForXml"/>
+			<aop:after method="byUnderGroundAfter" pointcut-ref="pointCutForXml" />
+			<aop:after method="sleep" pointcut-ref="pointCutForXml" />
+			<aop:after-throwing method="gotoHospital" pointcut-ref="pointCutForXml" />
+		</aop:aspect>
+
+	</aop:config>
+
 	<tx:annotation-driven transaction-manager="jdbcTransactionManager" proxy-target-class="true" />
 	<aop:aspectj-autoproxy />
 

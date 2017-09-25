@@ -38,4 +38,10 @@ public class UserCallController {
         activityService.watchMovie();
     }
 
+    @RequestMapping("/workEveryDay")
+    @ResponseBody
+    public void workEveryDay(){
+        activityService.workEveryDay();
+    }
+
 }

@@ -7,4 +7,6 @@ public interface ActivityService {
 
     public void watchMovie();
 
+    public void workEveryDay();
+
 }
