@@ -24,7 +24,7 @@ public class UserCallController {
     @RequestMapping("/testSettingWork")
     @ResponseBody
     public void testSettingWork(){
-        System.err.println("调用controller层的testSettingWork方法");
+        System.err.println("娴嬭瘯");
         userCallService.testSettingWork();
     }
 
